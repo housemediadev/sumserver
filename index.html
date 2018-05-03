@@ -10,21 +10,12 @@
         <h1 class="display-4">Sum Server</h1>
         <p class="lead">This Sum server is a small TCP services that listens on one socket (27877) for the incoming data
           (numbers 0...20), and sum all the valid inputs within a second (1000ms) to generate a sum result,
-        then write to another socket (27878) the sum result is sent to any client listening to that port.</p>
+        </p>
         <hr class="my-4" />
         <p>Please type next the value you want to sum</p>
       </div>
 
         <form action="">
-          <div class="form-group">
-            <ul id="messages"></ul>
-          </div>
-          <div class="form-group">
-            <label for="staticEmail" class="col-sm-2 col-form-label">Sum results</label>
-            <div class="col-sm-10">
-              <input type="text" readonly class="form-control-plaintext" id="sumResults" value="0">
-            </div>
-          </div>
           <div class="form-group">
             <input id="m" autocomplete="off" class="form-control" id="m" ></input>
           </div>
@@ -34,32 +25,22 @@
         </form>
 
     </div>
-<!-- <ul id="messages"></ul>
-<form action="">
-<input id="m" autocomplete="off" /><button>Send</button>
-</form> -->
-    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="http://localhost:27877/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.js"></script>
   	<script>
       $(function () {
-        var socket = io();
+        // var socket = io();
+        // var socket = io.connect('http://localhost:27877');
+        var socket = io.connect('http://localhost:27877');
         $('form').submit(function(){
           socket.emit('chat message', $('#m').val());
           $('#m').val('');
           return false;
         });
-        socket.on('chat message', function(msg){
-          try {
-            let sumValue = parseInt(msg);
-            if (sumValue < 0 || sumValue > 20) throw new Error('The number must be an integer between 1 and 50');
-            let res = parseInt($("#sumResults").val()) + sumValue;
-            $("#sumResults").val(res);
-            $('#messages').append($('<li>').text(msg));
-          }
-          catch(err) {
-            alert("please input a valid number: "+err);
-          }
+        socket.on('sum message', function(msg){
+            alert("please input a valid number: "+msg);
         });
       });
     </script>
